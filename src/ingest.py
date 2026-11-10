@@ -9,29 +9,35 @@ from .chunking import Chunk, chunk_page, is_low_quality
 # A line that is only "References" or "Bibliography" (optionally numbered)
 REF_HEADING = re.compile(r"^\s*(?:\d+\.?\s*)?(references|bibliography)\s*$",
                          re.IGNORECASE | re.MULTILINE)
-
+APPENDIX_HEADING = re.compile(
+    r"^\s*(?:Appendix\b.*|Appendices\b.*|[A-Z]\s+[A-Z][A-Za-z\- ]{4,60})$",
+    re.MULTILINE)
 
 def load_pdf_chunks(path) -> tuple[list[Chunk], int]:
     chunks, dropped = [], 0
+    in_refs = False
     reader = PdfReader(path)
     for page_num, page in enumerate(reader.pages, start=1):
         text = page.extract_text() or ""
 
-        # Stop at the reference list: keep text before the heading, skip the rest
-        match = REF_HEADING.search(text)
-        if match:
-            text = text[:match.start()]
+        if in_refs:
+            m = APPENDIX_HEADING.search(text)
+            if not m:
+                continue                 # still inside the reference list
+            text = text[m.start():]      # appendix begins here
+            in_refs = False
+        else:
+            m = REF_HEADING.search(text)
+            if m:
+                text = text[:m.start()]
+                in_refs = True
 
         page_chunks = chunk_page(text, path.name, page_num,
                                  config.CHUNK_SIZE_WORDS, config.CHUNK_OVERLAP_WORDS)
         kept = [c for c in page_chunks if not is_low_quality(c.text)]
         dropped += len(page_chunks) - len(kept)
         chunks.extend(kept)
-
-        if match:
-            break
     return chunks, dropped
-
 
 def main():
     pdfs = sorted(config.PDF_DIR.glob("*.pdf"))
