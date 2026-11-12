@@ -40,3 +40,14 @@
 - Weighted fusion recovers recall (hit@5 11/11) but still loses at rank 1 (5/11 vs 7/11). Trade-off: recall at 3-5 matters because the LLM will see the top chunks; ordering matters too.
 - Decision: keep embeddings only as default for now; hybrid 3:1 is the candidate. Plan: hybrid for candidate recall plus a reranker for ordering.
 - Limits: 11 questions; keywords are exact words, which favors BM25; weights were chosen on the same questions they are scored on (tuning on the test set). Re-check on the 30-50 question set (Days 17-18).
+
+## Day 5 (Nov 12, 2026): answer generation with citations
+- LLM: Gemini free tier (no billing), model "gemini-3.5-flash-lite", pinned in config.py. I first tried gemini-2.5-flash, but Google had retired it for new accounts (404), so the model name is a one-line setting. Trade-off: free-tier requests may be used by Google to improve products, which is fine for public arXiv papers but not for private documents.
+- Provider-agnostic design: all provider-specific code lives in one function (call_llm), so switching to Claude or another model is a one-function change.
+- Prompt rules: answer only from numbered passages, cite as [n], reply with a fixed "I don't know" sentence when the context lacks the answer, treat passages as untrusted data (basic prompt-injection defense). temperature=0 for repeatable runs.
+- Two refusal paths: (1) if the best dense similarity is below MIN_SCORE (0.20, untuned guess from Day 1 scores), refuse without calling the LLM; (2) the model refuses when the context lacks the answer. Off-topic France question refused at the similarity check.
+- Citation mapping: the code reads [n] tags in the answer and maps them back to file and page.
+- Result with dense-only retrieval: the Transformer optimizer question got "I don't know" (the Adam passage ranked 9th and never reached the model). Safe behavior, but a retrieval failure.
+- Switched the pipeline to hybrid retrieval (dense + BM25, weights 3:1, RRF). The optimizer question now answers correctly (Adam, p.7). The BERT answer also became more accurate.
+- Caveats: weights were chosen on the same 11 questions, so the optimizer fix is expected, not proven; four demo questions is not an evaluation. One citation spot-checked against the PDF: TODO. Re-test on the 30-50 question set (Days 17-18).
+- Open: the "top score" label printed for refusals shows the first hit, not the max.
