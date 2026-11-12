@@ -32,7 +32,11 @@ def _load_index():
                   data["metadatas"], BM25Index(data["documents"]))
     return _index
 
-
+def reset_cache():
+    """Call after re-indexing so the next search reads the new index."""
+    global _index
+    _index = None
+    
 def retrieve(question: str, k: int = config.TOP_K, mode: str | None = None) -> list[dict]:
     """Top-k chunks. 'score' is always the dense cosine similarity, so the
     low-similarity refusal in generate.py keeps working in either mode."""

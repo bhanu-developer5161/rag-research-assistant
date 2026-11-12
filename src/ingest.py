@@ -1,17 +1,20 @@
 import re
+
 import chromadb
 from pypdf import PdfReader
-from sentence_transformers import SentenceTransformer
 
 from . import config
 from .chunking import Chunk, chunk_page, is_low_quality
+from .retrieve import _get_model, reset_cache
 
 # A line that is only "References" or "Bibliography" (optionally numbered)
 REF_HEADING = re.compile(r"^\s*(?:\d+\.?\s*)?(references|bibliography)\s*$",
                          re.IGNORECASE | re.MULTILINE)
+# First line of an appendix, used to resume indexing after a reference list
 APPENDIX_HEADING = re.compile(
     r"^\s*(?:Appendix\b.*|Appendices\b.*|[A-Z]\s+[A-Z][A-Za-z\- ]{4,60})$",
     re.MULTILINE)
+
 
 def load_pdf_chunks(path) -> tuple[list[Chunk], int]:
     chunks, dropped = [], 0
@@ -39,13 +42,10 @@ def load_pdf_chunks(path) -> tuple[list[Chunk], int]:
         chunks.extend(kept)
     return chunks, dropped
 
-def main():
-    pdfs = sorted(config.PDF_DIR.glob("*.pdf"))
-    if not pdfs:
-        print(f"No PDFs found in {config.PDF_DIR}. Add some and rerun.")
-        return
 
-    model = SentenceTransformer(config.EMBEDDING_MODEL)
+def build_index(pdfs) -> list[dict]:
+    """Rebuild the whole index from the given PDF paths. Returns one stats row per PDF."""
+    model = _get_model()
     client = chromadb.PersistentClient(path=str(config.DB_DIR))
     try:
         client.delete_collection(config.COLLECTION_NAME)
@@ -54,11 +54,17 @@ def main():
     collection = client.create_collection(
         config.COLLECTION_NAME, metadata={"hnsw:space": "cosine"})
 
-    total = 0
+    stats = []
     for pdf in pdfs:
-        chunks, dropped = load_pdf_chunks(pdf)
+        try:
+            chunks, dropped = load_pdf_chunks(pdf)
+        except Exception as e:           # one bad PDF should not stop the others
+            stats.append({"file": pdf.name, "chunks": 0, "dropped": 0,
+                          "note": f"could not read: {type(e).__name__}"})
+            continue
         if not chunks:
-            print(f"  {pdf.name}: no extractable text (scanned PDF? needs OCR)")
+            stats.append({"file": pdf.name, "chunks": 0, "dropped": dropped,
+                          "note": "no extractable text (scanned PDF? needs OCR)"})
             continue
         embeddings = model.encode([c.text for c in chunks],
                                   normalize_embeddings=True,
@@ -69,9 +75,22 @@ def main():
             embeddings=embeddings,
             metadatas=[{"source": c.source, "page": c.page} for c in chunks],
         )
-        total += len(chunks)
-        print(f"  {pdf.name}: kept {len(chunks)} chunks, dropped {dropped} low-quality")
-    print(f"Indexed {total} chunks into {config.DB_DIR}")
+        stats.append({"file": pdf.name, "chunks": len(chunks),
+                      "dropped": dropped, "note": ""})
+    reset_cache()                        # make the next search read the new index
+    return stats
+
+
+def main():
+    pdfs = sorted(config.PDF_DIR.glob("*.pdf"))
+    if not pdfs:
+        print(f"No PDFs found in {config.PDF_DIR}. Add some and rerun.")
+        return
+    stats = build_index(pdfs)
+    for s in stats:
+        print(f"  {s['file']}: kept {s['chunks']} chunks, dropped {s['dropped']} "
+              f"low-quality {s['note']}".rstrip())
+    print(f"Indexed {sum(s['chunks'] for s in stats)} chunks into {config.DB_DIR}")
 
 
 if __name__ == "__main__":
