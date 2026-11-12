@@ -51,3 +51,11 @@
 - Switched the pipeline to hybrid retrieval (dense + BM25, weights 3:1, RRF). The optimizer question now answers correctly (Adam, p.7). The BERT answer also became more accurate.
 - Caveats: weights were chosen on the same 11 questions, so the optimizer fix is expected, not proven; four demo questions is not an evaluation. One citation spot-checked against the PDF: TODO. Re-test on the 30-50 question set (Days 17-18).
 - Open: the "top score" label printed for refusals shows the first hit, not the max.
+
+## Day 6 (Nov 12, 2026): Streamlit app
+- Refactored indexing into build_index() so the app and the command line share one code path; added reset_cache() so a re-index is picked up without restarting. One unreadable PDF reports a warning without stopping the others.
+- app.py: sidebar upload and "Index documents", question box, answer, and a sources panel showing all retrieved passages with the cited ones marked and expanded.
+- Runs in Colab through a temporary Cloudflare tunnel (laptop blocks PyTorch). Anyone with the link can spend the free Gemini quota, so I stop it after testing. Permanent hosting is planned for Day 19.
+- Verified in the browser: the Transformer optimizer question answers "Adam", cites passage [3] = attention_is_all_you_need.pdf p.7, and that passage contains the Adam sentence.
+- Observed: the correct passage scored only 0.32 similarity vs a 0.20 refusal threshold (thin margin, needs tuning on the larger set). Two of five shown sources (BERT p.12, Attention p.1) were irrelevant, which is evidence for a reranker. A page-number footer ("7") stays glued to the chunk text.
+- Upload of my own PDF: TODO. Off-topic refusal in the UI: TODO.
