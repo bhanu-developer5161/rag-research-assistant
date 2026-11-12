@@ -1,0 +1,26 @@
+"""Hand-written test questions. Each has keywords that must appear in a correct passage."""
+
+TESTS = [
+    ("Why does the Transformer use self-attention instead of recurrence?",
+        ["parallelization", "path length", "eschewing recurrence"]),
+    ("How was BERT pre-trained?",
+        ["masked lm", "next sentence prediction"]),
+    ("How many encoder layers does the base Transformer have?",
+        ["n = 6"]),
+    ("What optimizer was used to train the Transformer?",
+        ["adam optimizer"]),
+    ("What data was BERT pre-trained on?",
+        ["bookscorpus"]),
+    ("How many parameters does BERT-base have?",
+        ["110m"]),
+    ("Which language model is the generator in RAG?",
+        ["bart"]),
+    ("How does RAG find relevant documents?",
+        ["dense passage retriever", "mips", "maximum inner product"]),
+    ("How does the model avoid making up facts?",
+        ["hallucinate less"]),
+    ("How does multi-head attention work?",
+        ["jointly attend"]),
+    ("What is the difference between RAG-Sequence and RAG-Token?",
+        ["rag-sequence", "rag-token"]),
+]
