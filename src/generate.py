@@ -42,7 +42,7 @@ def build_prompt(question: str, hits: list[dict]) -> str:
 
 def answer(question: str, k: int = config.TOP_K) -> dict:
     hits = retrieve(question, k)
-        if not hits or max(h["score"] for h in hits) < config.MIN_SCORE:
+    if not hits or max(h["score"] for h in hits) < config.MIN_SCORE:
         return {"answer": IDK, "cited": [], "hits": hits, "refused": "low similarity"}
 
     text = call_llm(SYSTEM_PROMPT, build_prompt(question, hits))

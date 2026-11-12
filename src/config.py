@@ -15,3 +15,6 @@ MIN_SCORE = 0.20                      # below this top similarity, refuse withou
 
 RETRIEVAL_MODE = "hybrid"    # "hybrid" or "dense"
 HYBRID_WEIGHTS = (3, 1)      # dense : BM25, chosen on the 11-question set (exploratory)
+
+RETRIEVAL_MODE = "hybrid"    # "hybrid" or "dense"
+HYBRID_WEIGHTS = (3, 1)      # dense : BM25, chosen on the 11-question set (exploratory)
