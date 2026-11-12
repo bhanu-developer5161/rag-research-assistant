@@ -26,3 +26,17 @@
 - Diagnosis of the 4 questions not at rank 1 (size 250): self-attention vs recurrence has the right passage at rank 2 and RAG document retrieval at rank 3, so hit@1 was too strict. BERT pre-training has its describing passages at ranks 5-8, a real ranking weakness. The Transformer optimizer question is a real miss: the Adam passage is at rank 9, diluted inside a chunk full of other training details. Exact-word matching (BM25) would likely catch it, so this is evidence for hybrid search.
 - Open: overlap creates near-duplicate chunks (the Adam text sits in two chunks, ranks 9 and 45); the same BERT figure appears twice (p.3 and p.15).
 - Limits: only 11 questions, keywords written by hand, small chunks can split a keyword phrase. Add hit@3 or MRR and re-test on the 30-50 question set (Days 17-18).
+
+## Day 4 (Nov 12, 2026): MRR metric and keyword/hybrid search
+- Added MRR (mean of 1/rank) next to hit@k, because hit@1 was too strict on Day 3. Test questions now live in eval/questions.py.
+- Compared embeddings only, BM25 only, and Reciprocal Rank Fusion (RRF) of both, on 11 questions, 105 chunks:
+  embeddings only: hit@1 7/11, hit@3 9/11, hit@5 10/11, MRR 0.740
+  BM25 only: 5/11, 8/11, 9/11, MRR 0.625
+  hybrid 1:1: 5/11, 8/11, 8/11, MRR 0.634
+  hybrid 2:1: 5/11, 9/11, 11/11, MRR 0.682
+  hybrid 3:1: 5/11, 10/11, 11/11, MRR 0.685
+- Day 3 hypothesis confirmed: the Transformer optimizer question went from rank 9 (embeddings) to rank 1 (BM25).
+- BM25 fails on paraphrases: "avoid making up facts" ranked 54th with BM25 (the paper says "hallucinate less") but 1st with embeddings. Equal-weight fusion let bad BM25 rankings drag down good embedding rankings.
+- Weighted fusion recovers recall (hit@5 11/11) but still loses at rank 1 (5/11 vs 7/11). Trade-off: recall at 3-5 matters because the LLM will see the top chunks; ordering matters too.
+- Decision: keep embeddings only as default for now; hybrid 3:1 is the candidate. Plan: hybrid for candidate recall plus a reranker for ordering.
+- Limits: 11 questions; keywords are exact words, which favors BM25; weights were chosen on the same questions they are scored on (tuning on the test set). Re-check on the 30-50 question set (Days 17-18).

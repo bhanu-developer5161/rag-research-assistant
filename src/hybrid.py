@@ -23,12 +23,13 @@ class BM25Index:
         return np.array(self.bm25.get_scores(tokenize(query)))
 
 
-def rrf_fuse(score_arrays, k=60):
-    """Reciprocal Rank Fusion: each method votes 1/(k+rank) for every chunk."""
+def rrf_fuse(score_arrays, weights=None, k=60):
+    """Weighted Reciprocal Rank Fusion: each method votes weight/(k+rank) per chunk."""
+    weights = weights or [1.0] * len(score_arrays)
     fused = np.zeros(len(score_arrays[0]))
-    for s in score_arrays:
+    for s, w in zip(score_arrays, weights):
         order = np.argsort(-s)
         ranks = np.empty(len(s), dtype=int)
         ranks[order] = np.arange(1, len(s) + 1)
-        fused += 1.0 / (k + ranks)
+        fused += w / (k + ranks)
     return fused
