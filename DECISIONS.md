@@ -59,3 +59,11 @@
 - Verified in the browser: the Transformer optimizer question answers "Adam", cites passage [3] = attention_is_all_you_need.pdf p.7, and that passage contains the Adam sentence.
 - Observed: the correct passage scored only 0.32 similarity vs a 0.20 refusal threshold (thin margin, needs tuning on the larger set). Two of five shown sources (BERT p.12, Attention p.1) were irrelevant, which is evidence for a reranker. A page-number footer ("7") stays glued to the chunk text.
 - Upload of my own PDF: TODO. Off-topic refusal in the UI: TODO.
+
+## Day 7 (Nov 13, 2026): footer fix, refusal threshold, chat history
+- Footer fix: strip a 1-3 digit page number alone on the last line of a page (strip_page_footer in ingest.py). Chunk count unchanged at 105; 0 chunks now end with a bare number (Day 6 showed the Attention p.7 chunk ending in "7"). Limit: my check only looks for trailing numbers, so it does not prove the regex never removed a real number such as a table's last row; not spot-checked.
+- Refusal threshold, measured on best dense similarity per question: off-topic (6 questions) 0.077-0.193, on-topic (11) 0.347-0.633, related-but-absent (6) 0.214-0.384. Clean gap between 0.193 and 0.347. Chose MIN_SCORE = 0.25 (was an untuned 0.20, only 0.007 above the highest off-topic score). 0.40 would wrongly refuse the paraphrased "avoid making up facts" question (0.347), and false refusals are worse than letting the model's own rule decide.
+- A similarity threshold cannot separate related-but-absent questions (0.21-0.38 overlaps on-topic), so the model's rule must refuse them. Tested 6 such questions (GPT-4 parameters, CNNs, RLHF, Llama, diffusion, ResNet GPU): all 6 got "I don't know based on the provided documents". Two refusal layers are both needed.
+- Caveats: small samples (6 off-topic, 11 on-topic); on-topic questions were written by me knowing the papers, so real questions will likely score lower; "related but absent" topics are my assumption, not verified against the PDFs; refusal test is 6 questions at temperature 0, with no half-relevant tricky cases.
+- Chat history in app.py: Q&A pairs stay on screen, with a Clear chat button. It is display only: each question is answered alone, so follow-ups like "what about BERT?" do not work. Fix later: rewrite follow-ups into standalone questions.
+- Browser test of the chat app: TODO.
