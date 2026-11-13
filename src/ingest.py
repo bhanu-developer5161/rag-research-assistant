@@ -14,6 +14,12 @@ REF_HEADING = re.compile(r"^\s*(?:\d+\.?\s*)?(references|bibliography)\s*$",
 APPENDIX_HEADING = re.compile(
     r"^\s*(?:Appendix\b.*|Appendices\b.*|[A-Z]\s+[A-Z][A-Za-z\- ]{4,60})$",
     re.MULTILINE)
+# A page number alone on the last line of a page (e.g. "7")
+PAGE_FOOTER = re.compile(r"\n\s*\d{1,3}\s*$")
+
+
+def strip_page_footer(text: str) -> str:
+    return PAGE_FOOTER.sub("", text.rstrip())
 
 
 def load_pdf_chunks(path) -> tuple[list[Chunk], int]:
@@ -21,7 +27,7 @@ def load_pdf_chunks(path) -> tuple[list[Chunk], int]:
     in_refs = False
     reader = PdfReader(path)
     for page_num, page in enumerate(reader.pages, start=1):
-        text = page.extract_text() or ""
+        text = strip_page_footer(page.extract_text() or "")
 
         if in_refs:
             m = APPENDIX_HEADING.search(text)
