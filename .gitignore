@@ -4,3 +4,4 @@ __pycache__/
 chroma_db/
 data/pdfs/*.pdf
 check_env.py
+check_report.txt
