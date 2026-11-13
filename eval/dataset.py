@@ -75,7 +75,7 @@ DATASET = [
 
     # ---- RAG ----
     {"q": "Which language model generates the answers in RAG?", "source": R,
-     "evidence": [["bart"]],
+     "evidence": [["bart-large", "bartlarge", "400m parameters"]],
      "answer": "BART (large)", "kind": "factual", "split": "dev"},
     {"q": "Which retriever does RAG use to find passages?", "source": R,
      "evidence": [["dense passage retriever"]],
@@ -93,14 +93,14 @@ DATASET = [
      "kind": "factual", "split": "test"},
     {"q": "Can RAG's knowledge be refreshed without retraining the model?", "source": R,
      "evidence": [["easily updated at test time", "replace the non-parametric memory"]],
-     "answer": "Yes: swap the document index at test time", "kind": "paraphrase", "split": "dev"},
+     "answer": "Yes: the document index (non-parametric memory) can be updated at test time without retraining", "kind": "paraphrase", "split": "dev"},
     {"q": "Which components of RAG are updated during training and which stay fixed?", "source": R,
      "evidence": [["only fine-tuning the query encoder", "fine-tuning the query encoder"]],
      "answer": "Query encoder and generator are fine-tuned; document encoder and index stay fixed",
      "kind": "paraphrase", "split": "dev"},
-    {"q": "Which retriever and which generator does RAG combine?", "source": R,
-     "evidence": [["dense passage retriever"], ["bart"]],
-     "answer": "DPR retriever and BART generator", "kind": "two-passage", "split": "test"},
+    {"q": "Which retriever does RAG use, and how many passages are in its index?", "source": R,
+     "evidence": [["dense passage retriever"], ["21m documents"]],
+     "answer": "DPR; about 21 million 100-word passages", "kind": "two-passage", "split": "test"},
 
     # ---- unanswerable (the papers do not cover these) ----
     {"q": "Does the BERT paper report results for French-to-English translation?", "source": B,
@@ -116,4 +116,6 @@ DATASET = [
     {"q": "Was BERT evaluated on biomedical text?", "source": B,
      "absent": ["biomedical", "medical"], "answer": "", "kind": "unanswerable", "split": "test"},
 ]
+
+
 
