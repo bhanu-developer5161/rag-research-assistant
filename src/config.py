@@ -1,4 +1,4 @@
-from pathlib import Path
+﻿from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 PDF_DIR = ROOT / "data" / "pdfs"
@@ -11,7 +11,7 @@ CHUNK_SIZE_WORDS = 250
 CHUNK_OVERLAP_WORDS = 40
 TOP_K = 5
 LLM_MODEL = "gemini-3.5-flash-lite"   # models get retired; change it here only
-MIN_SCORE = 0.20                      # below this top similarity, refuse without calling the LLM (untuned guess)
+MIN_SCORE = 0.25                      # tuned Day 7: off-topic max 0.193, on-topic min 0.347 (small sample)
 
 RETRIEVAL_MODE = "hybrid"    # "hybrid" or "dense"
 HYBRID_WEIGHTS = (3, 1)      # dense : BM25, chosen on the 11-question set (exploratory)
