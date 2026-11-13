@@ -1,4 +1,4 @@
-# Decision Log
+﻿# Decision Log
 
 ## Day 1 (Nov 6, 2026)
 - Switched PDF parser from PyMuPDF to pypdf: my machine's Application Control policy blocked PyMuPDF's compiled DLL. Trade-off: pure Python so it installs anywhere, but extraction is noisier (ligatures, split words).
@@ -67,3 +67,12 @@
 - Caveats: small samples (6 off-topic, 11 on-topic); on-topic questions were written by me knowing the papers, so real questions will likely score lower; "related but absent" topics are my assumption, not verified against the PDFs; refusal test is 6 questions at temperature 0, with no half-relevant tricky cases.
 - Chat history in app.py: Q&A pairs stay on screen, with a Clear chat button. It is display only: each question is answered alone, so follow-ups like "what about BERT?" do not work. Fix later: rewrite follow-ups into standalone questions.
 - Browser test of the chat app: TODO.
+
+## Day 8 (Nov 13, 2026): evaluation set
+- Built a 30-question set for the three papers: 14 factual, 8 paraphrase, 2 two-passage, 6 unanswerable; split 20 dev / 10 test. Tune on dev only; test is for final numbers only. (Fixes the Day 4 flaw where weights were chosen on the same questions they were scored on.)
+- Authorship: the questions and expected answers were drafted by Claude from its knowledge of the papers, to be checked by me against the PDFs (verification pending, see below). I did not write them from scratch.
+- Instead of hand-typed page numbers, each question carries short evidence phrases; eval/check_dataset.py finds the matching pages in the real PDFs and prints a snippet so each answer can be verified. Two-passage questions use two evidence groups.
+- Automatic check: 29 of 30 passed first time. Question 25 (GPUs for BERT pre-training) failed the absence check because page 5 mentions a GPU for fine-tuning; replaced it with a question about French-to-English translation. A keyword absence check can say "present" when the passage is about something else, so it cannot replace a human reading.
+- Human check: TODO (not yet done). Until then the expected answers are only machine-matched to pages, not verified by a person.
+- Limits: 30 questions from 3 papers; a small test split of 10; questions drafted by an AI that knows these papers, so they may be easier than real user questions; evidence phrases mark a passage, not a unique answer.
+

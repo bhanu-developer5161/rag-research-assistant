@@ -1,0 +1,150 @@
+﻿
+[1] (dev, factual) What optimizer was used to train the Transformer?
+    expected: Adam, with beta1 = 0.9, beta2 = 0.98 and epsilon = 1e-9
+    evidence: pages [7]
+      ... were trained for 300,000 steps (3.5 days). 5.3 optimizer we used the adam optimizer [20] with β1 = 0.9, β2 = 0.98 and ε = 10−9. we varied the learning ra...
+
+[2] (dev, factual) How many layers does the encoder of the base Transformer stack?
+    expected: 6 identical layers
+    evidence: pages [3]
+      ...der and decoder stacks encoder: the encoder is composed of a stack of n = 6 identical layers. each layer has two sub-layers. the first is a multi-head self-attent...
+
+[3] (test, factual) How many attention heads does the base model use?
+    expected: 8 heads (d_k = d_v = 64)
+    evidence: pages [5]
+      ...l×dk, w vi ∈ rdmodel×dv and w o ∈ rhdv×dmodel. in this work we employ h = 8 parallel attention layers, or heads. for each of these we use dk = dv...
+
+[4] (dev, paraphrase) Why did the authors choose sine and cosine position signals instead of learning them?
+    expected: Learned embeddings gave nearly identical results; the sinusoidal version may extrapolate to longer sequences
+    evidence: pages [6]
+      ...)). we chose the sinusoidal version because it may allow the model to extrapolate to sequence lengths longer than the ones encountered during training. 4 why self-attention in th...
+
+[5] (dev, paraphrase) How many days did it take to train the biggest Transformer?
+    expected: About 3.5 days (300,000 steps)
+    evidence: pages [1, 7, 8]
+      ...w single-model state-of-the-art bleu score of 41.8 after training for 3.5 days on eight gpus, a small fraction of the training costs of the best mod...
+
+[6] (test, factual) What BLEU score did the largest model reach on English-to-German translation?
+    expected: 28.4
+    evidence: pages [1, 8]
+      ...le and requiring significantly less time to train. our model achieves 28.4 bleu on the wmt 2014 englishto-german translation task, improving ove...
+
+[7] (dev, paraphrase) Why are the dot products divided by a constant before the softmax?
+    expected: For large d_k the dot products grow large and push the softmax into regions with tiny gradients; they are scaled by 1/sqrt(d_k)
+    evidence: pages [4]
+      ...s of dk [3]. we suspect that for large values of dk, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely sma...
+
+[8] (dev, factual) What value of label smoothing was used during training?
+    expected: 0.1
+    evidence: pages [8]
+      ...e a rate of pdrop = 0.1. label smoothing during training, we employed label smoothing of value εls = 0.1 [36]. this hurts perplexity, as the model learns to be more...
+
+[9] (test, factual) How many parameters does the smaller BERT model have?
+    expected: 110M (12 layers, hidden size 768, 12 heads)
+    evidence: pages [3, 8]
+      ...lts on two model sizes: bertbase (l=12, h=768, a=12, total parameters=110m) and bertlarge (l=24, h=1024, a=16, total parameters=340m). bertbase ...
+
+[10] (dev, factual) What fraction of the input tokens is masked in the masked language model task?
+    expected: 15%
+    evidence: pages [4]
+      ...e vocabulary, as in a standard lm. in all of our experiments, we mask 15% of all wordpiece tokens in each sequence at random. in contrast to denoising auto-enco...
+
+[11] (dev, paraphrase) When BERT hides a word during training, is it always replaced by the mask token?
+    expected: No: 80% mask token, 10% a random token, 10% left unchanged
+    evidence: pages [4, 12, 16]
+      ...h token is chosen, we replace thei-th token with (1) the [mask] token 80% of the time (2) a random token 10% of the time (3) the unchanged i-th token 10% o...
+
+[12] (test, factual) How are sentence pairs built for the next sentence prediction task?
+    expected: Half the time B is the real next sentence (IsNext), half the time a random sentence (NotNext)
+    evidence: pages [4, 13]
+      ... of the time b is the actual next sentence that follows a (labeled as isnext), and 50% of the time it is a random sentence from the corpus (labele...
+
+[13] (dev, factual) What text collections was BERT pre-trained on?
+    expected: BooksCorpus (800M words) and English Wikipedia (2,500M words)
+    evidence: pages [5, 14]
+      ...n language model pre-training. for the pre-training corpus we use the bookscorpus (800m words) (zhu et al., 2015) and english wikipedia (2,500m words)....
+
+[14] (dev, factual) What overall GLUE score did BERT reach?
+    expected: 80.5%
+    evidence: pages [1]
+      ...atural language processing tasks, including pushing the glue score to 80.5% (7.7% point absolute improvement), multinli accuracy to 86.7% (4.6% a...
+
+[15] (test, two-passage) How big is the smaller BERT model and what data was it trained on?
+    expected: 110M parameters; BooksCorpus and English Wikipedia
+    group 1: pages [3, 8]
+      ...lts on two model sizes: bertbase (l=12, h=768, a=12, total parameters=110m) and bertlarge (l=24, h=1024, a=16, total parameters=340m). bertbase ...
+    group 2: pages [5, 14]
+      ...n language model pre-training. for the pre-training corpus we use the bookscorpus (800m words) (zhu et al., 2015) and english wikipedia (2,500m words)....
+
+[16] (dev, paraphrase) What hardware did the authors use to pre-train the larger BERT, and how long did it take?
+    expected: 16 Cloud TPUs (64 chips), about 4 days
+    evidence: pages [13]
+      ...tence prediction likelihood. training of bert base was performed on 4 cloud tpus in pod configuration (16 tpu chips total).13 training of bertlarge wa...
+
+[17] (dev, factual) Which language model generates the answers in RAG?
+    expected: BART (large)
+    evidence: pages [2, 3, 4, 5, 6, 7, 8, 9, '...']   <- many pages: phrase too generic
+      ...des latent documents conditioned on the input, and the seq2seq model (bart [32]) then conditions on these latent documents together with the inp...
+
+[18] (test, factual) Which retriever does RAG use to find passages?
+    expected: DPR, a bi-encoder retriever
+    evidence: pages [2]
+      ... in a probabilistic model trained end-to-end (fig. 1). the retriever (dense passage retriever [26], henceforth dpr) provides latent documents conditioned on the in...
+
+[19] (dev, factual) What document collection does RAG retrieve from?
+    expected: A December 2018 Wikipedia dump
+    evidence: pages [4, 7, 18]
+      ...ge of knowledge-intensive tasks. for all experiments, we use a single wikipedia dump for our non-parametric knowledge source. following lee et al. [31] an...
+
+[20] (dev, paraphrase) How are Wikipedia articles broken up into the pieces that RAG searches?
+    expected: Split into disjoint chunks of 100 words
+    evidence: pages [4]
+      ...the december 2018 dump. each wikipedia article is split into disjoint 100-word chunks, to make a total of 21m documents. we use the document encoder...
+
+[21] (test, factual) What is the difference between RAG-Sequence and RAG-Token?
+    expected: RAG-Sequence uses the same retrieved document for the whole output; RAG-Token can use a different document for each token
+    evidence: pages [3]
+      ...cedure. 2.1 models rag-sequence model the rag-sequence model uses the same retrieved document to generate the complete sequence. technically, it treats the retrieved document as a single latent var...
+
+[22] (dev, paraphrase) Can RAG's knowledge be refreshed without retraining the model?
+    expected: Yes: swap the document index at test time
+    evidence: pages [7]
+      ...age of non-parametric memory models like rag is that knowledge can be easily updated at test time. parametric-only models like t5 or bart need further training to upda...
+
+[23] (dev, paraphrase) Which components of RAG are updated during training and which stay fixed?
+    expected: Query encoder and generator are fine-tuned; document encoder and index stay fixed
+    evidence: pages [4]
+      ... strong performance, and keep the document encoder (and index) fixed, only fine-tuning the query encoder bertq and the bart generator. 2.5 decoding at test time, rag-sequence...
+
+[24] (test, two-passage) Which retriever and which generator does RAG combine?
+    expected: DPR retriever and BART generator
+    group 1: pages [2]
+      ... in a probabilistic model trained end-to-end (fig. 1). the retriever (dense passage retriever [26], henceforth dpr) provides latent documents conditioned on the in...
+    group 2: pages [2, 3, 4, 5, 6, 7, 8, 9, '...']   <- many pages: phrase too generic
+      ...des latent documents conditioned on the input, and the seq2seq model (bart [32]) then conditions on these latent documents together with the inp...
+
+[25] (dev, unanswerable) Does the BERT paper report results for French-to-English translation?
+    expected: (unanswerable: should be refused)
+    ok: ['french'] not found in bert_paper.pdf
+
+[26] (dev, unanswerable) How well does the Transformer classify images?
+    expected: (unanswerable: should be refused)
+    ok: ['image classification', 'imagenet'] not found in attention_is_all_you_need.pdf
+
+[27] (test, unanswerable) Does the RAG paper compare against GPT-3?
+    expected: (unanswerable: should be refused)
+    ok: ['gpt-3', 'gpt3'] not found in rag_paper.pdf
+
+[28] (dev, unanswerable) What BLEU score does BERT get on translation?
+    expected: (unanswerable: should be refused)
+    ok: ['bleu'] not found in bert_paper.pdf
+
+[29] (dev, unanswerable) How much energy did training the Transformer consume?
+    expected: (unanswerable: should be refused)
+    ok: ['carbon', 'energy consumption', 'emissions'] not found in attention_is_all_you_need.pdf
+
+[30] (test, unanswerable) Was BERT evaluated on biomedical text?
+    expected: (unanswerable: should be refused)
+    ok: ['biomedical', 'medical'] not found in bert_paper.pdf
+
+30 questions checked; 0 with problems: []
