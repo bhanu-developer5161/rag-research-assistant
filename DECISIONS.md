@@ -78,3 +78,14 @@
 
 
 
+
+## Day 9 (Nov 14, 2026): retrieval scorer on the dev split
+- Built eval/score_retrieval.py: scores dense, BM25 and hybrid on the 16 answerable dev questions with hit@k and MRR, under two relevance rules: page match (lenient) and page + evidence phrase in the chunk (strict). Two-passage questions are both in the test split, so dev has none. Test split untouched (needs --final).
+- Result (lenient MRR / strict MRR): dense 0.536 / 0.443, BM25 0.720 / 0.583, hybrid 1:1 0.665 / 0.586, hybrid 3:1 0.625 / 0.507.
+- The 3:1 weights from Day 4 do not hold on the larger set: hybrid 1:1 beats 3:1 on every table. Switched HYBRID_WEIGHTS to (1, 1). The Day 4 weights had been chosen on the same 11 questions they were scored on, which is the flaw the dev/test split fixes.
+- By kind: factual questions favour BM25 (MRR 0.760 vs dense 0.453); paraphrases favour hybrid 1:1 (0.794). Kept hybrid over BM25 alone because my questions were drafted knowing the papers' wording, which flatters keyword search, and because BM25 failed on a reworded question (BERT hardware: rank 27).
+- Failure for every method: "What hardware did the authors use to pre-train the larger BERT" ranks 7-27 (the paper says TPUs). Good test case for a reranker.
+- Refusal layer 1 (similarity threshold) caught 0 of 4 dev unanswerable questions: they scored 0.41-0.54 best similarity, higher than several answerable ones (lowest 0.326), because they are about the same papers. The Day 7 threshold only guards against truly off-topic questions.
+- Refusal layer 2 (model rule): refused 3 of 4. The Transformer-energy question got an answer about training FLOPs (grounded in the paper's cost table but not what was asked; it said FLOPs are used "rather than energy units"). Counted as a miss under the strict rule; arguably borderline. Only 4 questions.
+- Caveats: 16 questions (one question moving = about 6 points of hit@1); questions drafted by an AI; BM25 favoured by exact-word evidence; page-level relevance can credit a chunk on the right page that does not hold the answer.
+- Next: score end-to-end answers, try a stricter prompt for near-miss questions and re-test on dev, then try a reranker.
