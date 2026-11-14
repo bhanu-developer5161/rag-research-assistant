@@ -14,7 +14,7 @@ LLM_MODEL = "gemini-3.5-flash-lite"   # models get retired; change it here only
 MIN_SCORE = 0.25                      # tuned Day 7: off-topic max 0.193, on-topic min 0.347 (small sample)
 
 RETRIEVAL_MODE = "hybrid"    # "hybrid" or "dense"
-HYBRID_WEIGHTS = (3, 1)      # dense : BM25, chosen on the 11-question set (exploratory)
+HYBRID_WEIGHTS = (1, 1)      # dense : BM25, chosen on the 16-question dev set (Day 9)
 
 RETRIEVAL_MODE = "hybrid"    # "hybrid" or "dense"
-HYBRID_WEIGHTS = (3, 1)      # dense : BM25, chosen on the 11-question set (exploratory)
+HYBRID_WEIGHTS = (1, 1)      # dense : BM25, chosen on the 16-question dev set (Day 9)
