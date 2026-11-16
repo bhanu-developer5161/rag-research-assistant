@@ -99,7 +99,7 @@ def main():
         if not is_refusal(rec):
             ok = cited_on_answer_page(item, rec["cited"], pages)
             print(f"  cited: {[(c['page']) for c in rec['cited']]}"
-                  f"  {'(on an answer page)' if ok else '(NOT on an answer page)'}")
+                  f"  {'(on an answer page)' if ok else ('(NO CITATION)' if not rec['cited'] else '(NOT on an answer page)')}")
     print("\nsummary (answerable):")
     for cat, n in sorted(counts.items()):
         print(f"  {n:>2}  {cat}")
@@ -119,3 +119,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
