@@ -64,7 +64,8 @@ def answer(question: str, k: int = config.TOP_K, system: str | None = None) -> d
     if not hits or max(h["score"] for h in hits) < config.MIN_SCORE:
         return {"answer": IDK, "cited": [], "hits": hits, "refused": "low similarity"}
 
-    text = call_llm(system or PROMPT_A, build_prompt(question, hits))
+    text = call_llm(system or PROMPT_B, build_prompt(question, hits))
     nums = sorted({int(n) for n in re.findall(r"\[(\d+)\]", text)})
     cited = [hits[n - 1] for n in nums if 1 <= n <= len(hits)]
     return {"answer": text, "cited": cited, "hits": hits, "refused": None}
+

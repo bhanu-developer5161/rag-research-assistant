@@ -89,3 +89,12 @@
 - Refusal layer 2 (model rule): refused 3 of 4. The Transformer-energy question got an answer about training FLOPs (grounded in the paper's cost table but not what was asked; it said FLOPs are used "rather than energy units"). Counted as a miss under the strict rule; arguably borderline. Only 4 questions.
 - Caveats: 16 questions (one question moving = about 6 points of hit@1); questions drafted by an AI; BM25 favoured by exact-word evidence; page-level relevance can credit a chunk on the right page that does not hold the answer.
 - Next: score end-to-end answers, try a stricter prompt for near-miss questions and re-test on dev, then try a reranker.
+
+## Day 10 (Nov 15, 2026): end-to-end answers on the dev set, prompt A vs B
+- Built eval/run_answers.py: runs retrieve + generate on the dev split, saves each result (resumes after a free-tier stop), and sorts each answerable question into: answered with the answer page in context, wrongly refused, refused because retrieval missed it, or answered without evidence. Mock-tested before use; test split needs --final.
+- Added retry with backoff to call_llm for free-tier 429s. A first run looked stuck because grep buffered the progress lines (fixed with --line-buffered).
+- Prompt A (previous default): 14 of 16 answerable correct by my reading, 1 wrong (RAG generator: said "the generator component" without naming BART), 1 safe refusal (BERT-large hardware; retrieval missed the TPU page). Unanswerable: 3 of 4 refused; the Transformer-energy question got an answer about FLOPs. BERT data question was correct but had no citation despite the rule and the right pages being retrieved, so citations are requested by the prompt, not guaranteed.
+- Prompt B (adds: answer only if the passages directly state the answer; never use another model's or paper's number): all 4 unanswerable refused; same 14 correct answers; RAG generator now refused ("I don't know") instead of answered wrongly; BERT data question now cited. No correct answer lost.
+- Decision: use prompt B by default. Caveats: B was written after seeing the energy failure on this same dev set (tuned to dev); 20 questions, one temperature-0 run each; B still refuses the RAG generator question even though page 3 says BART-large, so strictness has a cost; the citation gain is probably luck.
+- Harness limits: "answered" is not "correct" (I graded content by hand); the citation check only tests the page, not that the cited chunk supports the claim.
+- Next: reranker for retrieval misses (BERT hardware), then final numbers once on the test split.
