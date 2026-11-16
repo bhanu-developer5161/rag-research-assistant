@@ -18,3 +18,6 @@ HYBRID_WEIGHTS = (1, 1)      # dense : BM25, chosen on the 16-question dev set (
 
 RETRIEVAL_MODE = "hybrid"    # "hybrid" or "dense"
 HYBRID_WEIGHTS = (1, 1)      # dense : BM25, chosen on the 16-question dev set (Day 9)
+
+RERANK_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"   # free, runs on CPU in Colab
+RERANK_CANDIDATES = 20                                  # how many first-stage hits the reranker reorders
