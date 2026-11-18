@@ -118,3 +118,11 @@
 - Verified on the live app: the sidebar shows 105 chunks from 3 documents (25 / 43 / 37, same as Colab); the Transformer optimizer question answers Adam and cites page 7, and the passage no longer ends with a stray page number; the off-topic question is refused without calling the model; the energy question (answered with FLOPs under the first prompt) is refused; the session limit message appears after 8 questions.
 - Not verified: how long a cold start takes after the app sleeps; memory under several simultaneous visitors; what happens when the free Gemini quota is exhausted; whether Streamlit's free limits stay as documented (their docs say they can change without notice).
 - Known rough edges: the sources panel still lists retrieved passages under a refusal; the correct optimizer passage scored only 0.32 against the 0.25 cutoff, so a rephrased question could fall under it; the assistant has no memory of earlier questions.
+
+## Day 12 follow-up (Nov 17, 2026): waking the free app
+- After the free host put the app to sleep, clicking "wake" took about 60 seconds until the sidebar showed the index again. After waking, the same 105 chunks were indexed (25 / 43 / 37), and the Transformer optimizer question answered Adam, citing page 7. Streamlit's docs say apps with no traffic for 12 hours go to sleep, so a first-time visitor can see the sleep screen. One measurement only.
+- Still not verified: memory under several simultaneous visitors, and what happens when the free Gemini quota runs out.
+
+## Day 12 follow-up (Nov 17, 2026): waking the free app
+- After the free host put the app to sleep, I woke it with the button; the sidebar then showed the same 105 chunks (25 / 43 / 37) and the Transformer optimizer question answered Adam, citing page 7. I did not time how long the wake-up took. Streamlit's docs say apps with no traffic for 12 hours go to sleep, so a first-time visitor can see the sleep screen.
+- Still not verified: wake-up time, memory under several simultaneous visitors, and what happens when the free Gemini quota runs out.
