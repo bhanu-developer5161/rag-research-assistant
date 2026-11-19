@@ -57,6 +57,7 @@ All three criteria I set beforehand were met, the answer criterion exactly at it
 - Citations are requested by the prompt, not guaranteed: one answer came back uncited even though the right pages were retrieved.
 - Each question is answered on its own; there is no conversational memory.
 - The public demo has no uploads (the index is shared). Uploads work locally with `ALLOW_UPLOADS=1`.
+- The page lists I use to judge retrieval are built from short evidence phrases and can be too narrow: on the test split I found one question where a correct, well-cited answer was flagged as citing the wrong page (the paper says "DPR" on page 3 and spells out "dense passage retriever" only on page 2). Other questions may have the same flaw, so page-level scores are approximate.
 
 ## Run it yourself
 
