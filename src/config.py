@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 PDF_DIR = ROOT / "data" / "pdfs"
@@ -16,8 +16,6 @@ MIN_SCORE = 0.25                      # tuned Day 7: off-topic max 0.193, on-top
 RETRIEVAL_MODE = "hybrid"    # "hybrid" or "dense"
 HYBRID_WEIGHTS = (1, 1)      # dense : BM25, chosen on the 16-question dev set (Day 9)
 
-RETRIEVAL_MODE = "hybrid"    # "hybrid" or "dense"
-HYBRID_WEIGHTS = (1, 1)      # dense : BM25, chosen on the 16-question dev set (Day 9)
 
 RERANK_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"   # free, runs on CPU in Colab
 RERANK_CANDIDATES = 20                                  # how many first-stage hits the reranker reorders
