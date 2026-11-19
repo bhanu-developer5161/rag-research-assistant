@@ -140,3 +140,10 @@
 - Dev rankings did not hold on test. BM25 was best on dev (MRR 0.720) and worst on test (0.513); hybrid 2:1 and 3:1 scored higher than 1:1 on test (MRR 0.643 and 0.650 vs 0.566). Eight questions cannot support a change, and my rules say not to switch methods based on these rows, so the pipeline stays as frozen.
 - Open: my report marked "RAG uses DPR" as cited on a page outside my list of answer pages for that question (cited page 3, my list has page 2); I have not read the cited passage, so I do not know whether my page list was too narrow.
 - Limits: 8 answerable questions, so one question is 12.5 points; the answers were drafted by an AI and graded by me; the two-passage type has only 2 test examples.
+
+## Day 13 addendum: test answers graded (frozen commit 11e7bbd, tag pre-test-freeze)
+- Read the two answers my report had cut off. Next sentence prediction: states 50% actual next sentence, 50% random sentence: correct. RAG-Sequence vs RAG-Token: correct. Answers correct: 6/8 (all 6 single-passage questions; 0/2 two-passage).
+- Pre-committed criteria: hit@5 7/8 (>= 6) MET; answers correct 6/8 (>= 6) MET, exactly at the bar; unanswerable refused 2/2 MET. All three met.
+- Dev to test: answers 14/16 (87.5%) to 6/8 (75%); retrieval hit@5 15/16 to 7/8. Within what 8 questions can show (one question = 12.5 points); treat as an indication, not a rate.
+- The real finding is the two-passage type, never scored on dev: 0/2 end to end. One failed on retrieval (second page ranked 9th, outside the top 5). The other was refused although both pages were retrieved; my hypothesis, untested, is that prompt B's rule ("answer only if the passages directly state the answer to the exact question asked") makes the model refuse when the answer must be assembled from two passages. Not acted on: the pipeline is frozen.
+- Still open: the report marked "RAG uses DPR" as cited outside my page list for that question (cited page 3; my list has page 2). The answer is correct; I have not yet read page 3 to see whether my page list was too narrow. I will not edit the test questions after the run.

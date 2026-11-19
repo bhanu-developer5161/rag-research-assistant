@@ -1,4 +1,4 @@
-﻿# AI Research Assistant (RAG)
+# AI Research Assistant (RAG)
 
 Ask questions about research papers and get answers with page-level source citations.
 
@@ -31,7 +31,17 @@ Retrieval on 16 answerable dev questions, mean reciprocal rank (page match / str
 
 End to end on 20 dev questions (16 answerable, 4 unanswerable): with the stricter prompt all 4 unanswerable questions were refused (3 of 4 with the first prompt); 14 of 16 answerable questions were answered correctly by my reading, and 2 were refused (one because retrieval missed the page, one over-refusal).
 
-The held-out test split (10 questions) has **not** been run yet; it is reserved for the final numbers.
+## Held-out test split (run once, at a frozen commit)
+
+The pipeline was frozen (git tag `pre-test-freeze`) and the pass criteria were written down before the test split was run. 10 questions: 8 answerable, 2 unanswerable.
+
+| | Dev | Test |
+|---|---|---|
+| Right page in the top 5 (hybrid) | 15/16 | 7/8 |
+| Answered correctly (graded by hand) | 14/16 | 6/8 |
+| Unanswerable questions refused | 4/4 | 2/2 |
+
+All three criteria I set beforehand were met, the answer criterion exactly at its bar (6/8). Underneath: all 6 single-passage questions were answered correctly, and both questions that need two different pages (a type never scored on dev) failed: once because the second page ranked 9th, once because the model refused although both pages had been retrieved. With 8 questions, one question is 12.5 points, so treat these as indications, not rates.
 
 ## What didn't work (kept on purpose)
 
