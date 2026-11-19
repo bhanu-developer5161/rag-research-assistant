@@ -122,3 +122,12 @@
 ## Day 12 follow-up (Nov 17, 2026): waking the free app
 - After the free host put the app to sleep, I woke it with the button; the sidebar then showed the same 105 chunks (25 / 43 / 37) and the Transformer optimizer question answered Adam, citing page 7. I did not time how long the wake-up took. Streamlit's docs say apps with no traffic for 12 hours go to sleep, so a first-time visitor can see the sleep screen.
 - Still not verified: wake-up time, memory under several simultaneous visitors, and what happens when the free Gemini quota runs out.
+
+## Day 13 (Nov 18, 2026): FREEZE and pass criteria, written BEFORE running the test split
+- Frozen pipeline (no changes after this commit): hybrid retrieval 1:1 (embeddings + BM25, rank fusion), top 5 passages, 250-word chunks with 40 overlap, similarity cutoff 0.25, prompt B, model gemini-3.5-flash-lite, temperature 0. The reranker is not used (not adopted on Day 11). Tag: pre-test-freeze.
+- Before freezing I removed two duplicate lines from config.py (same values, no behaviour change) and deleted a wake-up time ("about 60 seconds") from this log that I had committed without measuring; the entry that says I did not time it stays.
+- Test split: 10 questions (8 answerable, 2 unanswerable). It includes the only two-passage questions (they need two different pages), a type never scored on dev. One question = 12.5 points of the answerable score.
+- Reference, dev split: hybrid hit@5 15/16; 14/16 answerable answers correct by my reading; 4/4 unanswerable refused.
+- I will call the test result consistent with dev if: hit@5 >= 6/8 (page match; two-passage questions need both pages in the top 5), answers correct >= 6/8 (graded by hand against the expected answers), and unanswerable refused 2/2. Anything lower I report as a drop from dev.
+- Rules: I run each test script once. A crash caused by a technical problem (rate limit, a bug in the scoring script, not the pipeline) may be rerun, and I will say so here. I will not rerun to get better numbers, will not change the pipeline after seeing results, and will not switch methods based on the descriptive rows (dense, BM25, other weights) the script also prints. All results are reported, whatever they are.
+- Limits: tiny set; answers graded by me, with the answers drafted by an AI; the dev/test split was made before any tuning, but I have seen the test questions' text.
