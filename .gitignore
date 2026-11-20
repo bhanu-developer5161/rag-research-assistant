@@ -6,3 +6,4 @@ data/pdfs/*.pdf
 check_env.py
 check_report.txt
 eval/results/
+data/second/*.pdf

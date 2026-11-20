@@ -1,14 +1,23 @@
-﻿"""Verify the evaluation set against the real PDFs.
+﻿"""Verify an evaluation set against the real PDFs.
 
 For every answerable question it finds the pages that contain the evidence phrases and shows a
 snippet, so you can confirm the answer is really there. For unanswerable questions it confirms
-the topic is absent. Run from the project root:  python -m eval.check_dataset
+the topic is absent. Run from the project root:
+
+    python -m eval.check_dataset                 the three papers (eval/dataset.py)
+    $env:EVAL_SET="2"; python -m eval.check_dataset    the second corpus (eval/dataset2.py)
 """
+import importlib
+import os
+
 from pypdf import PdfReader
 
 from src import config
 from src.chunking import clean_text
-from eval.dataset import DATASET
+
+_module = importlib.import_module("eval.dataset" + os.environ.get("EVAL_SET", ""))
+DATASET = _module.DATASET
+PDF_DIR = getattr(_module, "PDF_DIR", config.PDF_DIR)
 
 _cache = {}
 
@@ -16,7 +25,7 @@ _cache = {}
 def page_texts(source):
     """Lowercased, cleaned text of each page (same cleaning as the index)."""
     if source not in _cache:
-        reader = PdfReader(config.PDF_DIR / source)
+        reader = PdfReader(PDF_DIR / source)
         _cache[source] = [clean_text(p.extract_text() or "").lower() for p in reader.pages]
     return _cache[source]
 
