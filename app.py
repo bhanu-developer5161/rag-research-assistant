@@ -1,4 +1,4 @@
-﻿# chromadb needs sqlite >= 3.35; some hosts ship an older one. Use the bundled one when available.
+# chromadb needs sqlite >= 3.35; some hosts ship an older one. Use the bundled one when available.
 try:
     __import__("pysqlite3")
     import sys
@@ -69,10 +69,21 @@ def get_daily_limit():
     return DailyLimit(DAILY_LIMIT)
 
 
+def is_refusal(result):
+    return bool(result["refused"]) or result["answer"].startswith("I don't know")
+
+
 def render_result(result):
     st.write(result["answer"])
     if result["refused"]:
         st.info("No passage looked relevant enough, so the language model was not called.")
+    if is_refusal(result):
+        # Nothing was used to answer, so the passages are not presented as sources.
+        with st.expander("Show the passages that were searched (none were used for an answer)"):
+            for i, hit in enumerate(result["hits"], start=1):
+                st.markdown(f"**[{i}] {hit['source']}, page {hit['page']}** (similarity {hit['score']:.2f})")
+                st.write(hit["text"])
+        return
     st.caption("Sources: numbers match the [n] citations. Cited passages are marked and expanded.")
     for i, hit in enumerate(result["hits"], start=1):
         cited = hit in result["cited"]
@@ -156,8 +167,11 @@ if question:
             with st.spinner("Searching and answering..."):
                 result = answer(question)
         except Exception as e:
-            st.error("The language model could not answer right now (it may be busy or its free "
-                     f"quota may be used up). Please try again later. Details: {str(e)[:200]}")
+            msg = str(e)
+            if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
+                st.error("The free Gemini quota is used up for now. Please try again later; it resets daily.")
+            else:
+                st.error(f"The language model could not answer right now. Please try again later. ({msg[:120]})")
             st.stop()
         render_result(result)
     st.session_state["history"].append({"question": question, "result": result})
