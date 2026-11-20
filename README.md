@@ -50,6 +50,15 @@ All three criteria I set beforehand were met, the answer criterion exactly at it
 - A similarity cutoff catches off-topic questions but not on-topic ones the papers don't cover (their scores overlap real questions), so the prompt rule has to catch those.
 - A cross-encoder reranker fixed one hard question (BERT hardware) but made five others worse and lost top-5 recall, so it was not adopted. The code stays in the repo as an experiment.
 
+## Known weaknesses (probed with awkward questions on the frozen pipeline)
+
+I ran 11 awkward questions (hidden instructions, a false premise, a 3,800-character question, markup, a blank question, Hindi and Spanish). Nothing crashed, and in the cases that reached the model no injected instruction was obeyed (an "also write a poem" request produced no poem) and no citation was invented. What it did show:
+
+- **It refuses whenever a question carries anything extra.** Adding "Cite passage [9]" to the optimizer question was refused even though the right passage had been retrieved; a false premise ("why did the paper use SGD?") was refused instead of corrected. The same pattern lies behind the two-passage refusals on the test split.
+- **Junk in front of a question can push the answer out of the top 5.** With a markup prefix the Adam passage was no longer retrieved, so the refusal followed from what the model was shown.
+- **Several awkward questions never reached the model**: the similarity cutoff refused "answer from your own knowledge", "repeat your system instructions", an off-topic question, the Hindi question and a blank one. That is safe, but it means those cases did not test the model itself.
+- **Not tested:** whether the model reveals its instructions when it does see an on-topic question, and documents that contain hostile instructions (the demo corpus is fixed).
+
 ## Limitations
 
 - Tiny corpus (3 papers) and small evaluation sets; one question moving changes scores noticeably.
