@@ -38,7 +38,7 @@ DATASET = [
      "evidence": [["two hundred and fifty crore", "two hundred and fifty crore rupees"]],
      "answer": "Up to two hundred and fifty crore rupees", "kind": "paraphrase", "split": "transfer"},
     {"q": "Does this law cover a foreign company that offers services to people in India?", "source": D,
-     "evidence": [["offering of goods or services to data principals within the territory of india"]],
+     "evidence": [["within the territory of india; application of act"]],
      "answer": "Yes, when the processing relates to offering goods or services to people in India",
      "kind": "paraphrase", "split": "transfer"},
     {"q": "Whose permission does a company need before using a child's data?", "source": D,
