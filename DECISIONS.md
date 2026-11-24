@@ -1,4 +1,4 @@
-# Decision Log
+﻿# Decision Log
 
 ## Day 1 (Nov 6, 2026)
 - Switched PDF parser from PyMuPDF to pypdf: my machine's Application Control policy blocked PyMuPDF's compiled DLL. Trade-off: pure Python so it installs anywhere, but extraction is noisier (ligatures, split words).
@@ -165,7 +165,8 @@
 
 ## Day 15 (Nov 20, 2026): second corpus chosen and checked
 - Corpus: India's Digital Personal Data Protection Act, 2023 (official Gazette copy from India Code, 21 pages, English, selectable text). Chosen because it is a different kind of text from the ML papers (definitions, deadlines, amounts, a penalty table) and is public, so Colab can fetch the same file. Used only as test material; not legal advice.
-- 12 questions (2 factual, 5 paraphrase, 2 two-passage, 3 unanswerable), all marked "transfer": nothing is tuned on them and the frozen pipeline will be scored once (Day 16). AUTHORSHIP: drafted by Claude from its knowledge of the Act (it did not see my PDF), then checked by me; I rewrote [N] of the questions in my own words. This is the same weakness as the first set: questions from something that knows the document may be easier than real users' questions.
+- 12 questions (2 factual, 5 paraphrase, 2 two-passage, 3 unanswerable), all marked "transfer": nothing is tuned on them and the frozen pipeline will be scored once (Day 16). AUTHORSHIP: drafted by Claude from its knowledge of the Act (it did not see my PDF), then checked by me; I rewrote 0 of the questions in my own words. This is the same weakness as the first set: questions from something that knows the document may be easier than real users' questions.
 - eval/check_dataset.py found a matching page for every evidence phrase (0 problems) and confirmed the unanswerable topics are absent. It also showed three evidence lists that were too broad (foreign-company, child-consent and erasure questions matched extra pages); I tightened them to one phrase each.
-- Checked by eye in the PDF: [say which pages you read and what you confirmed].
+- Checked by eye in the PDF: Not checked by eye yet; the page 21 amounts are only machine-matched by the checker..
 - Expected before running (a prediction, written down first): the Schedule on page 21 is extracted with its amounts detached from the rows that describe them, and margin notes and Gazette headers are mixed into running text, so the three questions that depend on pairing an amount with a breach (fine for failing security safeguards; the two-passage breach-notice and children questions) are the most likely to go wrong. One unanswerable question (sensitive health data) is ambiguous because the Act mentions health in other contexts; the grading rule is: correct if the answer says there is no special protection, wrong if it invents one.
+
