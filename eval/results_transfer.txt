@@ -1,1 +1,98 @@
 Copied from the Colab console output of the single run at tag pre-transfer-run; the saved transfer_output.txt only held an earlier failed attempt (ModuleNotFoundError).
+
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+55 chunks | 9 answerable, 3 unanswerable | chunk 250/40 | weights (1, 1) | cutoff 0.25 | model gemini-3.5-flash-lite
+
+Loading weights: 100%|██████████| 103/103 [00:00<00:00, 6052.98it/s]
+--- retrieval, frozen hybrid ---
+page match         hit@1 1/9  hit@3 5/9  hit@5 5/9  MRR 0.352
+strict match       hit@1 1/9  hit@3 5/9  hit@5 5/9  MRR 0.344
+
+question                                                                page  strict
+Up to what age is someone treated as a child under this law?               2       2
+How long do I have to challenge a decision of the Data Protection Bo      30      30
+How big can the fine be for a company that fails to keep personal da      14      14
+Does this law cover a foreign company that offers services to people       7      13
+Whose permission does a company need before using a child's data?          1       1
+Can a company make it harder to withdraw consent than it was to give       2       2
+When does a company have to delete personal data it holds about me?        3       3
+What must a company do if personal data is leaked, and how large can      12      12
+What may a company not do with children's data, and what is the maxi       2       2
+
+Loading weights: 100%|██████████| 103/103 [00:00<00:00, 5693.60it/s]
+  done 1/12
+  done 2/12
+  done 3/12
+  done 4/12
+  done 5/12
+  done 6/12
+  done 7/12
+  done 8/12
+  done 9/12
+  done 10/12
+  done 11/12
+  done 12/12
+
+=== answerable questions ===
+
+[answered (context had it)] (factual) Up to what age is someone treated as a child under this law?
+  expected: Under 18: a child is anyone who has not completed eighteen years of age
+  got:      An individual who has not completed the age of eighteen years is treated as a child [2].
+  cited pages: [2] (on an answer page)
+
+[refused (retrieval missed it)] (paraphrase) How long do I have to challenge a decision of the Data Protection Board?
+  expected: Sixty days from receiving the order, by appealing to the Appellate Tribunal
+  got:      I don't know based on the provided documents.
+
+[refused (retrieval missed it)] (paraphrase) How big can the fine be for a company that fails to keep personal data secure?
+  expected: Up to two hundred and fifty crore rupees
+  got:      I don't know based on the provided documents.
+
+[refused (retrieval missed it)] (paraphrase) Does this law cover a foreign company that offers services to people in India?
+  expected: Yes, when the processing relates to offering goods or services to people in India
+  got:      I don't know based on the provided documents.
+
+[answered (context had it)] (paraphrase) Whose permission does a company need before using a child's data?
+  expected: The verifiable consent of the child's parent or lawful guardian
+  got:      A Data Fiduciary must obtain the verifiable consent of the parent of a child, or the lawful guardian (in the case of a person with disability who has a lawful guardian), before processing any personal data of a child [1].
+  cited pages: [8] (on an answer page)
+
+[answered (context had it)] (paraphrase) Can a company make it harder to withdraw consent than it was to give it?
+  expected: No: withdrawing must be about as easy as giving consent
+  got:      No. A Data Principal has the right to withdraw their consent at any time, with the ease of doing so being comparable to the ease with which such consent was given [2].
+  cited pages: [5] (on an answer page)
+
+[answered (context had it)] (factual) When does a company have to delete personal data it holds about me?
+  expected: When I withdraw consent, or once the purpose is no longer being served, unless a law requires keeping it
+  got:      Based on the provided documents, a Data Fiduciary must erase personal data:
+- Upon the Data Principal withdrawing her consent, unless retention is necessary for compliance with any law for the time being in force [3].
+- Upon receiving a request for erasure from a Data Principal, unless retention of the data is necessary for the specified purpose or for compliance with any law for the time being in force [1].
+  cited pages: [10, 7] (on an answer page)
+
+[refused (retrieval missed it)] (two-passage) What must a company do if personal data is leaked, and how large can the penalty be for not doing it?
+  expected: Tell the Board and each affected person; up to two hundred crore rupees for failing to
+  got:      I don't know based on the provided documents.
+
+[answered (context had it)] (two-passage) What may a company not do with children's data, and what is the maximum penalty for breaking that rule?
+  expected: No tracking or behavioural monitoring of children and no targeted advertising aimed at them; up to two hundred crore rupees
+  got:      Based on the provided documents, a Data Fiduciary shall not:
+- Undertake processing of personal data that is likely to cause any detrimental effect on the well-being of a child [1].
+- Undertake tracking or behavioural monitoring of children or targeted advertising directed at children [1].
+
+The maximum penalty for a breach in observing additional obligations in relation to children under section 9 may extend to two hundred crore rupees [2].
+  cited pages: [8, 21] (on an answer page)
+
+=== unanswerable questions (should be refused) ===
+
+[refused] What does the Act say about cryptocurrency exchanges?
+
+[refused] What are the rules for facial recognition cameras in shops?
+
+[refused] What extra protection does the Act give to sensitive health data?
+
+=== summary (compare with the criteria committed before this run) ===
+retrieval: right page(s) in the top 5 for 5/9 answerable questions
+answers:    5  answered (context had it)
+answers:    4  refused (retrieval missed it)
+unanswerable refused: 3/3
+Whether each answered question is CORRECT is graded by hand against the expected answers.
