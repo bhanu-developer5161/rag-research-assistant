@@ -84,7 +84,7 @@ def render_result(result):
                 st.markdown(f"**[{i}] {hit['source']}, page {hit['page']}** (similarity {hit['score']:.2f})")
                 st.write(hit["text"])
         return
-    st.caption("Sources: numbers match the [n] citations. Cited passages are marked and expanded.")
+    st.caption("Sources: numbers match the [n] citations. Cited passages are marked and expanded. (v1)")
     for i, hit in enumerate(result["hits"], start=1):
         cited = hit in result["cited"]
         label = f"[{i}] {hit['source']}, page {hit['page']}" + ("  (cited)" if cited else "")
