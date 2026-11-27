@@ -1,1 +1,1 @@
-/usr/bin/python3: Error while finding module specification for 'eval.run_transfer' (ModuleNotFoundError: No module named 'eval')
+Copied from the Colab console output of the single run at tag pre-transfer-run; the saved transfer_output.txt only held an earlier failed attempt (ModuleNotFoundError).

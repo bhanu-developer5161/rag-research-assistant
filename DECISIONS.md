@@ -179,3 +179,13 @@
 - Prediction, written first: the questions that depend on the penalty table (fine for failing security safeguards; the two-passage breach-notice and children questions) are the most likely to go wrong, because page 21 is extracted with the amounts detached from the rows that describe them. Gazette headers and margin notes inside the text may also hurt retrieval.
 - Rules: eval.run_transfer is run once. A rerun after a technical stop (rate limit, crash) is allowed and will be noted here; I will not rerun to get different results, will not edit anything afterwards, and will report every result.
 - Limits: 12 questions, so one question is 8 to 11 points; questions drafted by an AI that knows the Act; I have not tuned anything on this set but I have seen the questions.
+## Day 16 (Nov 27, 2026): second-corpus run, results
+- Run once in Colab at tag pre-transfer-run, frozen pipeline. Earlier attempts stopped on a missing PDF / wrong directory before any results; nothing was changed. Note: the criteria entry above is headed Nov 21 but was committed and tagged on 2026-11-26; the tag is the proof of order.
+- Retrieval: right page(s) in the top 5 for 5/9 (criterion 6/9: MISSED). Reference, first set's test split: 7/8.
+- Answers: 5 answered, 4 refused. Hand-graded: 4 fully correct, 1 partial (deletion: covers withdrawal and erasure requests, omits "purpose no longer served"). So 4/9 or 5/9 depending on whether partial counts (criterion 5/9: met only if partial counts).
+- Unanswerable refused: 3/3 (met). The sensitive-health question was refused rather than answered with "no special protection"; nothing was invented.
+- All 4 refusals followed retrieval misses (page-match ranks: appeal 30, security fine 14, breach 12, foreign company 7); no wrong answer found among the 5 answered.
+- Prediction: partly right. Security fine and breach questions failed; the children's question did not. The appeal and foreign-company misses were not predicted. Cause not yet investigated (hypothesis only: page 21 layout, Gazette headers).
+- Results file: eval/results_transfer.txt holds the console output copied from Colab; the saved transfer_output.txt only contained an earlier failed attempt (ModuleNotFoundError), and the first commit of that file was corrected in the next commit.
+- Checked by eye in the PDF: not checked by eye yet (page 21 amounts, page 30 appeal text).
+- Limits: 12 questions, one question is 8-11 points; questions AI-drafted; I had seen the questions.
